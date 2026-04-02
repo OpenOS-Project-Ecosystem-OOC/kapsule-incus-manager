@@ -215,6 +215,14 @@ class IncusClient:
             params=params,
         )
 
+    async def restore_snapshot(self, name: str, snapshot: str,
+                                project: str = "") -> dict[str, Any]:
+        params = {"project": project} if project else {}
+        return await self.post(  # type: ignore[return-value]
+            f"/1.0/instances/{name}/snapshots/{snapshot}",
+            json={"restore": snapshot}, params=params,
+        )
+
     async def delete_snapshot(self, name: str, snapshot: str,
                                project: str = "") -> dict[str, Any]:
         params = {"project": project} if project else {}
@@ -257,6 +265,9 @@ class IncusClient:
     async def get_storage_pool(self, name: str) -> dict[str, Any]:
         return await self.get(f"/1.0/storage-pools/{name}")  # type: ignore[return-value]
 
+    async def update_storage_pool(self, name: str, config: dict[str, Any]) -> None:
+        await self.put(f"/1.0/storage-pools/{name}", json=config)
+
     async def delete_storage_pool(self, name: str) -> dict[str, Any]:
         return await self.delete(f"/1.0/storage-pools/{name}")  # type: ignore[return-value]
 
@@ -291,6 +302,9 @@ class IncusClient:
         if alias:
             payload["aliases"] = [{"name": alias}]
         return await self.post("/1.0/images", json=payload)  # type: ignore[return-value]
+
+    async def get_image(self, fingerprint: str) -> dict[str, Any]:
+        return await self.get(f"/1.0/images/{fingerprint}")  # type: ignore[return-value]
 
     async def delete_image(self, fingerprint: str) -> dict[str, Any]:
         return await self.delete(f"/1.0/images/{fingerprint}")  # type: ignore[return-value]
@@ -327,6 +341,12 @@ class IncusClient:
     async def create_project(self, config: dict[str, Any]) -> dict[str, Any]:
         return await self.post("/1.0/projects", json=config)  # type: ignore[return-value]
 
+    async def get_project(self, name: str) -> dict[str, Any]:
+        return await self.get(f"/1.0/projects/{name}")  # type: ignore[return-value]
+
+    async def update_project(self, name: str, config: dict[str, Any]) -> None:
+        await self.put(f"/1.0/projects/{name}", json=config)
+
     async def delete_project(self, name: str) -> dict[str, Any]:
         return await self.delete(f"/1.0/projects/{name}")  # type: ignore[return-value]
 
@@ -334,6 +354,9 @@ class IncusClient:
 
     async def list_cluster_members(self) -> list[dict[str, Any]]:
         return await self.get("/1.0/cluster/members", params={"recursion": "1"})  # type: ignore[return-value]
+
+    async def get_cluster_member(self, name: str) -> dict[str, Any]:
+        return await self.get(f"/1.0/cluster/members/{name}")  # type: ignore[return-value]
 
     async def delete_cluster_member(self, name: str) -> dict[str, Any]:
         return await self.delete(f"/1.0/cluster/members/{name}")  # type: ignore[return-value]
@@ -350,6 +373,9 @@ class IncusClient:
 
     async def list_operations(self) -> list[dict[str, Any]]:
         return await self.get("/1.0/operations", params={"recursion": "1"})  # type: ignore[return-value]
+
+    async def get_operation(self, op_id: str) -> dict[str, Any]:
+        return await self.get(f"/1.0/operations/{op_id}")  # type: ignore[return-value]
 
     async def cancel_operation(self, op_id: str) -> None:
         await self.delete(f"/1.0/operations/{op_id}")

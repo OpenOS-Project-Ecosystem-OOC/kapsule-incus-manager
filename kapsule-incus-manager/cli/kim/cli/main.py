@@ -307,6 +307,79 @@ def vm_delete(ctx: click.Context, name: str, force: bool, project: str) -> None:
                              params={"force": str(force).lower(), "project": project})
 
 
+@vm.command("freeze")
+@click.argument("name")
+@click.option("--project", default="")
+@click.pass_context
+def vm_freeze(ctx: click.Context, name: str, project: str) -> None:
+    """Freeze a VM."""
+    ctx.obj["client"].put(f"/api/v1/instances/{name}/state",
+                          json={"action": "freeze", "project": project})
+
+
+@vm.command("unfreeze")
+@click.argument("name")
+@click.option("--project", default="")
+@click.pass_context
+def vm_unfreeze(ctx: click.Context, name: str, project: str) -> None:
+    """Unfreeze a VM."""
+    ctx.obj["client"].put(f"/api/v1/instances/{name}/state",
+                          json={"action": "unfreeze", "project": project})
+
+
+@vm.command("rename")
+@click.argument("name")
+@click.argument("new_name")
+@click.option("--project", default="")
+@click.pass_context
+def vm_rename(ctx: click.Context, name: str, new_name: str, project: str) -> None:
+    """Rename a VM."""
+    ctx.obj["client"].post(f"/api/v1/instances/{name}/rename",
+                           json={"new_name": new_name, "project": project})
+
+
+@vm.command("logs")
+@click.argument("name")
+@click.option("--project", default="")
+@click.pass_context
+def vm_logs(ctx: click.Context, name: str, project: str) -> None:
+    """Fetch VM logs."""
+    ctx.obj["client"].get_text(f"/api/v1/instances/{name}/logs",
+                               params={"project": project})
+
+
+@vm.command("file-pull")
+@click.argument("name")
+@click.argument("remote_path")
+@click.argument("local_path")
+@click.option("--project", default="")
+@click.pass_context
+def vm_file_pull(ctx: click.Context, name: str, remote_path: str,
+                 local_path: str, project: str) -> None:
+    """Pull a file from a VM to the local filesystem."""
+    ctx.obj["client"].download_file(
+        f"/api/v1/instances/{name}/files",
+        params={"path": remote_path, "project": project},
+        dest=local_path,
+    )
+
+
+@vm.command("file-push")
+@click.argument("name")
+@click.argument("local_path")
+@click.argument("remote_path")
+@click.option("--project", default="")
+@click.pass_context
+def vm_file_push(ctx: click.Context, name: str, local_path: str,
+                 remote_path: str, project: str) -> None:
+    """Push a local file into a VM."""
+    ctx.obj["client"].upload_file(
+        f"/api/v1/instances/{name}/files",
+        params={"path": remote_path, "project": project},
+        src=local_path,
+    )
+
+
 # ── Networks ──────────────────────────────────────────────────────────────────
 
 @cli.group()

@@ -45,6 +45,7 @@ public:
     Q_INVOKABLE void deleteImage(const QString &fingerprint);
 
     Q_INVOKABLE void listProfiles(const QString &project = {});
+    Q_INVOKABLE void listProfilePresets();
     Q_INVOKABLE void createProfile(const QVariantMap &config);
     Q_INVOKABLE void deleteProfile(const QString &name);
 
@@ -81,6 +82,7 @@ signals:
     void storagePoolsListed(const QVariantList &pools);
     void imagesListed(const QVariantList &images);
     void profilesListed(const QVariantList &profiles);
+    void profilePresetsListed(const QVariantList &presets);
     void projectsListed(const QVariantList &projects);
     void clusterMembersListed(const QVariantList &members);
     void remotesListed(const QVariantList &remotes);

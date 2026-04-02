@@ -143,6 +143,10 @@ class _KIMInterface:
         ))
         return op.get("id", "")
 
+    def RestoreSnapshot(self, name: str, snapshot: str, project: str) -> str:
+        op = self._run(self._incus.restore_snapshot(name, snapshot, project=project))
+        return op.get("id", "")
+
     def DeleteSnapshot(self, name: str, snapshot: str, project: str) -> str:
         op = self._run(self._incus.delete_snapshot(name, snapshot, project=project))
         return op.get("id", "")
@@ -222,6 +226,9 @@ class _KIMInterface:
     def GetStoragePool(self, name: str) -> str:
         return json.dumps(self._run(self._incus.get_storage_pool(name)))
 
+    def UpdateStoragePool(self, name: str, config: str) -> None:
+        self._run(self._incus.update_storage_pool(name, json.loads(config)))
+
     def DeleteStoragePool(self, name: str) -> str:
         op = self._run(self._incus.delete_storage_pool(name))
         return op.get("id", "")
@@ -245,6 +252,9 @@ class _KIMInterface:
     def PullImage(self, remote: str, image: str, alias: str) -> str:
         op = self._run(self._incus.pull_image(remote, image, alias=alias))
         return op.get("id", "")
+
+    def GetImage(self, fingerprint: str) -> str:
+        return json.dumps(self._run(self._incus.get_image(fingerprint)))
 
     def DeleteImage(self, fingerprint: str) -> str:
         op = self._run(self._incus.delete_image(fingerprint))
@@ -281,6 +291,12 @@ class _KIMInterface:
         op = self._run(self._incus.create_project(json.loads(config)))
         return op.get("id", "")
 
+    def GetProject(self, name: str) -> str:
+        return json.dumps(self._run(self._incus.get_project(name)))
+
+    def UpdateProject(self, name: str, config: str) -> None:
+        self._run(self._incus.update_project(name, json.loads(config)))
+
     def DeleteProject(self, name: str) -> str:
         op = self._run(self._incus.delete_project(name))
         return op.get("id", "")
@@ -289,6 +305,9 @@ class _KIMInterface:
 
     def ListClusterMembers(self, remote: str) -> str:
         return json.dumps(self._run(self._incus.list_cluster_members()))
+
+    def GetClusterMember(self, name: str) -> str:
+        return json.dumps(self._run(self._incus.get_cluster_member(name)))
 
     def RemoveClusterMember(self, name: str) -> str:
         op = self._run(self._incus.delete_cluster_member(name))
@@ -333,6 +352,17 @@ class _KIMInterface:
                                tls_cert=body.get("tls_cert"),
                                tls_key=body.get("tls_key"))
 
+    def GetRemote(self, name: str) -> str:
+        import pathlib
+        cfg = pathlib.Path.home() / ".config" / "kim" / "remotes.json"
+        stored: dict = {}
+        if cfg.exists():
+            stored = json.loads(cfg.read_text())
+        if name in stored:
+            return json.dumps(stored[name])
+        # Fall back to a minimal record for built-in remotes
+        return json.dumps({"name": name, "url": "unix://", "protocol": "incus"})
+
     def RemoveRemote(self, name: str) -> None:
         import pathlib
         cfg_path = pathlib.Path.home() / ".config" / "kim" / "remotes.json"
@@ -350,6 +380,9 @@ class _KIMInterface:
         if status:
             ops = [o for o in ops if o.get("status", "").lower() == status.lower()]
         return json.dumps(ops)
+
+    def GetOperation(self, id: str) -> str:
+        return json.dumps(self._run(self._incus.get_operation(id)))
 
     def CancelOperation(self, id: str) -> None:
         self._run(self._incus.cancel_operation(id))

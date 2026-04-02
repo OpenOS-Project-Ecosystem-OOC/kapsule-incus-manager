@@ -158,6 +158,9 @@ void KimClient::deleteImage(const QString &fp)
 void KimClient::listProfiles(const QString &p)
 { WATCH_LIST(m_iface->asyncCall("ListProfiles", p, QString()), profilesListed) }
 
+void KimClient::listProfilePresets()
+{ WATCH_LIST(m_iface->asyncCall("ListProfilePresets"), profilePresetsListed) }
+
 void KimClient::createProfile(const QVariantMap &c)
 { WATCH_OP(m_iface->asyncCall("CreateProfile", toJson(c))) }
 
