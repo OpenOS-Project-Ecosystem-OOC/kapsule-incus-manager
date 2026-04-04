@@ -119,7 +119,10 @@ it("calls DELETE endpoint on confirm", async () => {
   render(<NetworksPage />);
   await waitFor(() => screen.getByText("lxdbr0"));
   fireEvent.click(screen.getAllByRole("button", { name: /delete/i })[0]);
-  fireEvent.click(screen.getByRole("button", { name: /^delete$/i }));
+  // Two "Delete" buttons exist: the row trigger and the confirm dialog button.
+  // Pick the last one (the confirm dialog's confirm button).
+  const deleteButtons = screen.getAllByRole("button", { name: /^delete$/i });
+  fireEvent.click(deleteButtons[deleteButtons.length - 1]);
   await waitFor(() => {
     const calls = (global.fetch as ReturnType<typeof vi.fn>).mock.calls;
     const deleteCall = calls.find(([url, opts]: [string, RequestInit]) =>
