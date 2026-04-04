@@ -15,7 +15,7 @@ from typing import Any
 from ...events import EventBus
 from ...incus.client import IncusClient
 from ...profiles.library import list_presets
-from ...provisioning.compose import deploy_compose, convert_compose
+from ...provisioning.compose import convert_compose, deploy_compose
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class DBusService:
         """Start the D-Bus service and forward events as signals."""
         try:
             from dasbus.connection import SessionMessageBus
-            from dasbus.server.interface import dbus_interface, dbus_signal
+            from dasbus.server.interface import dbus_interface  # noqa: F401
         except ImportError:
             logger.warning("dasbus not available — D-Bus service disabled")
             # Block forever so the TaskGroup doesn't exit

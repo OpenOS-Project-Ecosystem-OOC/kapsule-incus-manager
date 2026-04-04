@@ -122,7 +122,8 @@ it("opens confirm dialog on Remove click", async () => {
   await waitFor(() => screen.getByText("prod"));
   fireEvent.click(screen.getByRole("button", { name: /remove/i }));
   expect(screen.getByText(/remove remote/i)).toBeInTheDocument();
-  expect(screen.getByText(/prod/)).toBeInTheDocument();
+  // "prod" appears in both the table row and the dialog; use getAllBy.
+  expect(screen.getAllByText(/prod/).length).toBeGreaterThan(0);
 });
 
 it("calls DELETE on confirm remove", async () => {

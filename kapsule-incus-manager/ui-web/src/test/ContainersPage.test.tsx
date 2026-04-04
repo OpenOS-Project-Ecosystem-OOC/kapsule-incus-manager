@@ -139,16 +139,18 @@ it("opens confirm dialog on Delete click", async () => {
   mockFetch({ "/api/v1/instances": RUNNING });
   render(<ContainersPage />);
   await waitFor(() => screen.getByText("web-01"));
-  fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+  // Multiple "Delete" buttons may exist (one per row); click the first.
+  fireEvent.click(screen.getAllByRole("button", { name: "Delete" })[0]);
   expect(screen.getByText(/delete container/i)).toBeInTheDocument();
-  expect(screen.getByText(/web-01/)).toBeInTheDocument();
+  // "web-01" now appears in both the table row and the dialog; use getAllBy.
+  expect(screen.getAllByText(/web-01/).length).toBeGreaterThan(0);
 });
 
 it("closes confirm dialog on Cancel", async () => {
   mockFetch({ "/api/v1/instances": RUNNING });
   render(<ContainersPage />);
   await waitFor(() => screen.getByText("web-01"));
-  fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+  fireEvent.click(screen.getAllByRole("button", { name: "Delete" })[0]);
   fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
   expect(screen.queryByText(/delete container/i)).toBeNull();
 });
@@ -157,7 +159,7 @@ it("calls DELETE endpoint on confirm", async () => {
   mockFetch({ "/api/v1/instances": RUNNING });
   render(<ContainersPage />);
   await waitFor(() => screen.getByText("web-01"));
-  fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+  fireEvent.click(screen.getAllByRole("button", { name: "Delete" })[0]);
   // Click the red "Delete" button inside the ConfirmDialog
   const confirmBtn = screen.getAllByRole("button", { name: "Delete" }).at(-1)!;
   fireEvent.click(confirmBtn);

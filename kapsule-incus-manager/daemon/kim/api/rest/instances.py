@@ -228,7 +228,8 @@ async def exec_ws(
     op_id = resp.get("id", "")
     fds = resp.get("metadata", {}).get("fds", {})
     secret = fds.get("0", "")
-    ctrl_secret = fds.get("control", "")
+    # ctrl_secret reserved for future control-channel use
+    _ctrl_secret = fds.get("control", "")
 
     # Build Incus websocket URL (UDS-based — use http+unix scheme via httpx)
     incus_ws_url = f"ws+unix:///var/lib/incus/unix.socket:/1.0/operations/{op_id}/websocket?secret={secret}"

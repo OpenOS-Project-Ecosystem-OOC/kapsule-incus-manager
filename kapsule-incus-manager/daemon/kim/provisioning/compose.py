@@ -18,7 +18,7 @@ async def deploy_compose(incus: Any, config: dict[str, Any]) -> dict[str, Any]:
     name        = config["name"]
     compose_src = config["compose"]
     image       = config.get("image", "images:ubuntu/24.04")
-    project     = config.get("project", "")
+    _project    = config.get("project", "")  # reserved for future multi-project support
     disk_size   = config.get("disk_size", "20GB")
     profiles    = ["default", "nesting"]
 
@@ -53,7 +53,6 @@ async def deploy_compose(incus: Any, config: dict[str, Any]) -> dict[str, Any]:
 
 def _build_cloud_init(name: str, compose_src: str) -> str:
     """Generate cloud-init user-data that installs Docker and the compose watcher."""
-    escaped = compose_src.replace("\\", "\\\\").replace('"', '\\"')
     return textwrap.dedent(f"""\
         #cloud-config
         package_update: true
