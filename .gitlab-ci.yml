@@ -1,0 +1,22 @@
+# Converted from GitHub Actions — kapsule-incus-manager
+
+stages:
+  - test
+
+test:
+  stage: test
+  image: ubuntu:22.04
+  before_script:
+    - apt-get update -qq && apt-get install -y --no-install-recommends
+        bash shellcheck
+  script:
+    - |
+      failed=0
+      for f in $(find . -name "*.sh" ! -path "./.git/*"); do
+        if bash -n "$f"; then echo "OK:   $f"
+        else echo "FAIL: $f"; failed=1; fi
+      done
+      exit $failed
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
