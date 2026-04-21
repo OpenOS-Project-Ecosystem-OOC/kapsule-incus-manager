@@ -11,10 +11,10 @@ provisioning plugins:
 
 | Source project | Guest type | CLI entry point |
 |---|---|---|
-| [incusbox](https://gitlab.com/OSPF1896/incusbox) | Generic Linux containers | `kim provision generic` |
-| [waydroid-toolkit](https://gitlab.com/OSPF1896/waydroid-toolkit) | Waydroid (Android) containers | `kim provision waydroid` |
-| [Incus-MacOS-Toolkit](https://gitlab.com/OSPF1896/Incus-MacOS-Toolkit) | macOS KVM VMs | `kim provision macos` |
-| [incus-windows-toolkit](https://gitlab.com/OSPF1896/incus-windows-toolkit) | Windows VMs | `kim provision windows` |
+| [incusbox](https://gitlab.com/openos-project/incus_deving/incusbox) | Generic Linux containers | `kim provision generic` |
+| [waydroid-toolkit](https://gitlab.com/openos-project/incus_deving/waydroid-toolkit) | Waydroid (Android) containers | `kim provision waydroid` |
+| [Incus-MacOS-Toolkit](https://gitlab.com/openos-project/incus_deving/incus-mac-os-toolkit) | macOS KVM VMs | `kim provision macos` |
+| [incus-windows-toolkit](https://gitlab.com/openos-project/incus_deving/incus-windows-toolkit) | Windows VMs | `kim provision windows` |
 
 ## Architecture
 
