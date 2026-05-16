@@ -1,141 +1,75 @@
-# Kapsule Incus Manager
+[update-readmes]   Mode: rewrite — migrating to template structure...
+# kapsule-incus-manager
 
-Unified [Incus](https://linuxcontainers.org/incus/) container and VM management
-with full feature parity across three frontends: a Qt6/QML desktop app, a React
-web UI, and a CLI.
+[![Built with Ona](https://ona.com/build-with-ona.svg)](https://app.ona.com/#https://github.com/Interested-Deving-1896/kapsule-incus-manager)
 
-KIM is the central control plane for all Incus guest types — generic Linux
-containers, Waydroid (Android) containers, macOS KVM VMs, and Windows VMs.
-Four previously independent toolkits have been merged into the daemon as
-provisioning plugins:
-
-| Source project | Guest type | CLI entry point |
-|---|---|---|
-| [incusbox](https://gitlab.com/openos-project/incus_deving/incusbox) | Generic Linux containers | `kim provision generic` |
-| [waydroid-toolkit](https://gitlab.com/openos-project/incus_deving/waydroid-toolkit) | Waydroid (Android) containers | `kim provision waydroid` |
-| [Incus-MacOS-Toolkit](https://gitlab.com/openos-project/incus_deving/incus-mac-os-toolkit) | macOS KVM VMs | `kim provision macos` |
-| [incus-windows-toolkit](https://gitlab.com/openos-project/incus_deving/incus-windows-toolkit) | Windows VMs | `kim provision windows` |
+<!-- AI:start:what-it-does -->
+_Description pending._
+<!-- AI:end:what-it-does -->
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     Frontends                           │
-│  Qt6/QML desktop app  │  React web UI  │  kim CLI       │
-└──────────┬────────────┴───────┬────────┴────────┬───────┘
-           │ D-Bus              │ HTTP/WS/SSE      │ HTTP
-           └──────────┬─────────┘                 │
-                      ▼                            │
-           ┌──────────────────────┐                │
-           │    kim-daemon        │◄───────────────┘
-           │  (FastAPI + dasbus)  │
-           │                      │
-           │  provisioning/       │
-           │    generic.py        │  ← incusbox
-           │    waydroid.py       │  ← waydroid-toolkit
-           │    macos.py          │  ← Incus-MacOS-Toolkit
-           │    windows.py        │  ← incus-windows-toolkit
-           └──────────┬───────────┘
-                      │ Unix socket
-                      ▼
-           ┌──────────────────────┐
-           │       Incus          │
-           │  (containers + VMs)  │
-           └──────────────────────┘
-```
+<!-- AI:start:architecture -->
+_Architecture documentation pending._
+<!-- AI:end:architecture -->
 
-The daemon is the single control plane. No frontend or plugin calls the `incus`
-CLI directly — all operations go through the Incus REST API. Every action
-available in the GUI is also available in the CLI and REST API.
+## Install
 
-## Repository layout
-
-```
-├── ARCHITECTURE.md                    # Design decisions and component boundaries
-├── kapsule-incus-manager/
-│   ├── api/schema/                    # OpenAPI schema (143 operations) + D-Bus XML
-│   ├── daemon/
-│   │   └── kim/
-│   │       ├── provisioning/          # Guest-type provisioning plugins
-│   │       │   ├── generic.py         # incusbox feature set
-│   │       │   ├── waydroid.py        # waydroid-toolkit feature set
-│   │       │   ├── macos.py           # Incus-MacOS-Toolkit feature set
-│   │       │   └── windows.py         # incus-windows-toolkit feature set
-│   │       └── incus/client.py        # Async Incus REST client
-│   ├── cli/                           # Python CLI (Click + httpx + rich)
-│   ├── profiles/                      # Bundled Incus profile presets (16 profiles)
-│   │   ├── generic/                   # incusbox profiles
-│   │   ├── macos/                     # macOS KVM profile
-│   │   ├── windows/                   # Windows VM profiles + GPU overlays
-│   │   └── waydroid/                  # Waydroid container profile
-│   ├── ui-web/                        # React/TypeScript web UI (Vite)
-│   └── ui-qml/                        # Qt6/QML desktop UI + libkim-qt
-```
-
-Full documentation is in [`kapsule-incus-manager/README.md`](kapsule-incus-manager/README.md).
-
-## Quick start
-
-### Daemon
+<!-- Add installation instructions here. This section is yours — the AI will not modify it. -->
 
 ```bash
-cd kapsule-incus-manager/daemon
-pip install -e ".[dev]"
-kim-daemon
+git clone https://github.com/Interested-Deving-1896/kapsule-incus-manager.git
+cd kapsule-incus-manager
 ```
 
-### CLI
+## Usage
 
-```bash
-cd kapsule-incus-manager/cli
-pip install -e ".[dev]"
+<!-- Add usage examples here. This section is yours — the AI will not modify it. -->
 
-# Generic containers (incusbox)
-kim provision generic create mybox --image images:ubuntu/24.04/cloud
+## Configuration
 
-# Waydroid (Android) container
-kim provision waydroid create my-android --image-type GAPPS
+<!-- Document configuration options here. This section is yours — the AI will not modify it. -->
 
-# macOS VM
-kim provision macos image firmware
-kim provision macos image fetch --version sonoma
-kim provision macos create my-mac --version sonoma
+## CI
 
-# Windows VM
-kim provision windows create my-win --image /path/to/win11.iso
+<!-- AI:start:ci -->
+_CI documentation pending._
+<!-- AI:end:ci -->
 
-# Standard instance management
-kim container list
-kim vm list
+## Mirror chain
+
+<!-- AI:start:mirror-chain -->
+This repo is maintained in [`Interested-Deving-1896/kapsule-incus-manager`](https://github.com/Interested-Deving-1896/kapsule-incus-manager) and mirrored through:
+
+```
+Interested-Deving-1896/kapsule-incus-manager  ──►  OpenOS-Project-OSP/kapsule-incus-manager  ──►  OpenOS-Project-Ecosystem-OOC/kapsule-incus-manager
 ```
 
-### Web UI
+Changes flow downstream automatically via the hourly mirror chain in
+[`fork-sync-all`](https://github.com/Interested-Deving-1896/fork-sync-all).
+Direct commits to OSP or OOC are detected and opened as PRs back to `Interested-Deving-1896`.
+<!-- AI:end:mirror-chain -->
 
-```bash
-cd kapsule-incus-manager/ui-web
-npm install && npm run dev
-# Open http://localhost:5173
-```
+## Contributors
 
-### QML desktop app
+<!-- AI:start:contributors -->
+_Contributors pending._
+<!-- AI:end:contributors -->
 
-```bash
-cmake -B build -S kapsule-incus-manager/ui-qml -G Ninja
-cmake --build build
-./build/kim-app
-```
+## Origins
 
-## Prerequisites
+<!-- AI:start:origins -->
+_No dependency graph found. Run `generate-dep-graph.yml` to generate `dep-graph/origins.md`._
+<!-- AI:end:origins -->
 
-| Component | Requirement |
-|---|---|
-| Incus | ≥ 6.0 |
-| Python | ≥ 3.11 |
-| Node.js | ≥ 20 (web UI) |
-| Qt6 | ≥ 6.5 with DBus, Network, WebSockets, Quick, QuickControls2 |
-| CMake | ≥ 3.22 (QML app) |
+## Resources
+
+<!-- AI:start:resources -->
+_No additional resource files found._
+<!-- AI:end:resources -->
 
 ## License
 
-- Daemon, CLI, web UI: GPL-3.0-or-later
-- `libkim-qt`: LGPL-2.1-or-later
+<!-- AI:start:license -->
+<!-- License not detected — add a LICENSE file to this repo. -->
+<!-- AI:end:license -->
