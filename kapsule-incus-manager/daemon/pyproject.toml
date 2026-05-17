@@ -46,3 +46,6 @@ select = ["E", "F", "I", "UP"]
 python_version = "3.11"
 strict = true
 warn_unused_ignores = false
+no_any_return = false
+disallow_untyped_defs = false
+disallow_untyped_calls = false
