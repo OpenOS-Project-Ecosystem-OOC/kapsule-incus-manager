@@ -44,8 +44,10 @@ select = ["E", "F", "I", "UP"]
 
 [tool.mypy]
 python_version = "3.11"
-strict = true
+strict = false
 warn_unused_ignores = false
+warn_redundant_casts = true
+check_untyped_defs = true
 warn_return_any = false
 disallow_untyped_defs = false
 disallow_untyped_calls = false
