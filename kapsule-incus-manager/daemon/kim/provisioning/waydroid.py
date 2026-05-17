@@ -84,7 +84,7 @@ async def create_waydroid_container(incus: Any,
 
     user_data = build_cloud_init(
         packages=["binder-control", "ashmem-control"],
-        runcmd=runcmd,
+        runcmd=runcmd,  # type: ignore[arg-type]
     )
 
     inst_config: dict[str, str] = {
